@@ -1,0 +1,376 @@
+import { useState, useEffect } from 'react';
+import { Code2, MessageSquare, Trophy, Zap, ArrowRight, Star, Users, BookOpen, ChevronRight } from 'lucide-react';
+import { topics } from '../data/topics';
+
+interface HomePageProps {
+  setCurrentPage: (page: string) => void;
+  setActiveTopic: (topic: string) => void;
+  completedLessons: string[];
+}
+
+const stats = [
+  { icon: Users, value: '12,400+', label: 'Talabalar', color: '#6366f1' },
+  { icon: BookOpen, value: '150+', label: 'Darslar', color: '#a855f7' },
+  { icon: Star, value: '4.9/5', label: 'Reyting', color: '#f59e0b' },
+  { icon: Trophy, value: '89%', label: 'Muvaffaqiyat', color: '#06b6d4' },
+];
+
+const features = [
+  {
+    icon: '🤖',
+    title: 'AI Ustoz',
+    desc: 'Sun\'iy intellekt yordamida istalgan savolingizga javob oling. 24/7 mavjud!',
+    color: '#6366f1',
+  },
+  {
+    icon: '⚡',
+    title: 'Jonli Muharrir',
+    desc: 'Kodingizni to\'g\'ridan-to\'g\'ri brauzerda yozing va natijani ko\'ring.',
+    color: '#f59e0b',
+  },
+  {
+    icon: '🎯',
+    title: 'Interaktiv Testlar',
+    desc: 'Har bir darsdan keyin bilimingizni test qiling va yutuq qozonin.',
+    color: '#22c55e',
+  },
+  {
+    icon: '📱',
+    title: 'Responsive Dizayn',
+    desc: 'Telefon, planshet yoki kompyuterdan qulay foydalaning.',
+    color: '#a855f7',
+  },
+];
+
+const typingTexts = [
+  'HTML, CSS, JavaScript...',
+  'React.js va Node.js...',
+  'Full-Stack dasturchi bo\'lish...',
+  'SBS-404 bilan birga o\'sish...',
+];
+
+export default function HomePage({ setCurrentPage, setActiveTopic, completedLessons }: HomePageProps) {
+  const [typingIndex, setTypingIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = typingTexts[typingIndex];
+    const speed = isDeleting ? 50 : 80;
+
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        setDisplayText(current.slice(0, charIndex + 1));
+        setCharIndex((c) => c + 1);
+        if (charIndex + 1 === current.length) {
+          setTimeout(() => setIsDeleting(true), 1500);
+        }
+      } else {
+        setDisplayText(current.slice(0, charIndex - 1));
+        setCharIndex((c) => c - 1);
+        if (charIndex - 1 === 0) {
+          setIsDeleting(false);
+          setTypingIndex((i) => (i + 1) % typingTexts.length);
+        }
+      }
+    }, speed);
+
+    return () => clearTimeout(timer);
+  }, [charIndex, isDeleting, typingIndex]);
+
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section
+        className="relative min-h-screen flex items-center justify-center overflow-hidden hero-bg"
+        style={{ paddingTop: '80px' }}
+      >
+        {/* Animated background particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, idx) => (
+            <div
+              key={idx}
+              className="absolute rounded-full opacity-20"
+              style={{
+                width: `${Math.random() * 6 + 2}px`,
+                height: `${Math.random() * 6 + 2}px`,
+                background: ['#6366f1', '#a855f7', '#06b6d4', '#f59e0b'][idx % 4],
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left content */}
+            <div className="text-center lg:text-left">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
+                style={{
+                  background: 'rgba(99,102,241,0.1)',
+                  border: '1px solid rgba(99,102,241,0.3)',
+                }}>
+                <Zap className="w-4 h-4" style={{ color: '#f59e0b' }} />
+                <span className="text-sm font-medium" style={{ color: '#a5b4fc' }}>
+                  🇺🇿 O'zbek tilida dasturlash platformasi
+                </span>
+              </div>
+
+              <h1 className="hero-title font-black mb-6 leading-tight"
+                style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: 'white' }}>
+                Dasturlashni{' '}
+                <span style={{
+                  background: 'linear-gradient(135deg, #6366f1, #a855f7, #06b6d4)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}>
+                  AI Bilan
+                </span>{' '}
+                O'rganing
+              </h1>
+
+              <div className="text-lg sm:text-xl text-gray-400 mb-3 h-8">
+                <span style={{ color: '#6366f1' }}>→ </span>
+                <span className="typing-cursor">{displayText}</span>
+              </div>
+
+              <p className="text-gray-400 mb-8 text-base sm:text-lg leading-relaxed">
+                SBS-404 platformasida AI ustoz yordamida HTML, CSS, JavaScript, React va Backend dasturlashni
+                interaktiv ravishda o'rganing. Kodingizni yozing, test qiling va muvaffaqiyatga erishing!
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <button
+                  onClick={() => setCurrentPage('courses')}
+                  className="btn-neon flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-white text-lg transition-all"
+                >
+                  <BookOpen className="w-5 h-5" />
+                  Darslarni Boshlash
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setCurrentPage('chat')}
+                  className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-base transition-all"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(99,102,241,0.3)',
+                    color: '#a5b4fc',
+                  }}
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  AI Bilan Suhbat
+                </button>
+              </div>
+
+              {/* Mini stats */}
+              <div className="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
+                {stats.map((stat, i) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div key={i} className="flex items-center gap-2">
+                      <Icon className="w-4 h-4" style={{ color: stat.color }} />
+                      <span className="font-bold text-white">{stat.value}</span>
+                      <span className="text-gray-500 text-sm">{stat.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Right - AI Teacher image */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-3xl blur-3xl opacity-30"
+                  style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }} />
+                <div className="relative rounded-3xl overflow-hidden float-anim"
+                  style={{
+                    border: '2px solid rgba(99,102,241,0.3)',
+                    boxShadow: '0 0 40px rgba(99,102,241,0.3)',
+                    maxWidth: '400px',
+                  }}>
+                  <img
+                    src="/images/ai-teacher.png"
+                    alt="AI Ustoz"
+                    className="w-full object-cover"
+                    style={{ maxHeight: '450px', objectPosition: 'center top' }}
+                  />
+                  {/* Overlay info */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4"
+                    style={{ background: 'linear-gradient(transparent, rgba(10,10,15,0.95))' }}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                        style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)' }}>
+                        <Code2 className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-white">SBS AI Ustoz</div>
+                        <div className="text-xs text-gray-400 flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                          Har doim online
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8" style={{ background: 'rgba(15,15,26,0.8)' }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black mb-4 gradient-text">
+              Nima Uchun SBS-404?
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Eng zamonaviy o'qitish texnologiyalari bilan to'liq dasturlash ta'limi
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((f, i) => (
+              <div
+                key={i}
+                className="card-hover p-6 rounded-2xl cursor-pointer"
+                style={{
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                }}
+              >
+                <div className="text-4xl mb-4">{f.icon}</div>
+                <h3 className="font-bold text-white text-lg mb-2">{f.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+                <div className="mt-4 h-1 rounded-full"
+                  style={{ background: `linear-gradient(90deg, ${f.color}, transparent)` }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Topics Overview */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black mb-4 text-white">
+              O'rganish{' '}
+              <span className="gradient-text">Yo'li</span>
+            </h2>
+            <p className="text-gray-400">Boshlang'ichdan professionalga qadar</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {topics.map((topic) => {
+              const completed = topic.lessons.filter(l =>
+                completedLessons.includes(l.id)
+              ).length;
+              const pct = Math.round((completed / topic.lessons.length) * 100);
+
+              return (
+                <div
+                  key={topic.id}
+                  className="card-hover p-6 rounded-2xl cursor-pointer group"
+                  onClick={() => { setActiveTopic(topic.id); setCurrentPage('courses'); }}
+                  style={{
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                  }}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="text-4xl">{topic.icon}</div>
+                    <div className="flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full"
+                      style={{
+                        background: topic.level === "Boshlang'ich"
+                          ? 'rgba(34,197,94,0.15)'
+                          : topic.level === "O'rta"
+                            ? 'rgba(245,158,11,0.15)'
+                            : 'rgba(239,68,68,0.15)',
+                        color: topic.level === "Boshlang'ich"
+                          ? '#22c55e'
+                          : topic.level === "O'rta"
+                            ? '#f59e0b'
+                            : '#ef4444',
+                      }}>
+                      {topic.level}
+                    </div>
+                  </div>
+
+                  <h3 className="font-bold text-white text-xl mb-1">{topic.titleUz}</h3>
+                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">{topic.description}</p>
+
+                  <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                    <span>{topic.lessons.length} ta dars</span>
+                    <span>{pct}% bajarildi</span>
+                  </div>
+
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{
+                        width: `${pct}%`,
+                        background: `linear-gradient(90deg, ${topic.color}, ${topic.color}99)`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-1 mt-4 text-sm font-medium group-hover:gap-2 transition-all"
+                    style={{ color: topic.color }}>
+                    Boshlash <ChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="p-10 rounded-3xl relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.1))',
+              border: '1px solid rgba(99,102,241,0.2)',
+            }}>
+            <div className="absolute top-0 left-0 right-0 h-px"
+              style={{ background: 'linear-gradient(90deg, transparent, #6366f1, transparent)' }} />
+            <div className="text-5xl mb-4">🚀</div>
+            <h2 className="text-3xl font-black text-white mb-4">
+              Bugun Boshlang!
+            </h2>
+            <p className="text-gray-400 mb-8 text-lg">
+              Minglab o'zbekistonlik dasturchilar bilan birgalikda o'rganing
+            </p>
+            <button
+              onClick={() => setCurrentPage('chat')}
+              className="btn-neon px-10 py-4 rounded-2xl font-bold text-white text-lg inline-flex items-center gap-3"
+            >
+              <MessageSquare className="w-6 h-6" />
+              AI Ustoz bilan Gaplashing
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-4 text-center"
+        style={{ borderTop: '1px solid rgba(99,102,241,0.1)' }}>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <Code2 className="w-5 h-5" style={{ color: '#6366f1' }} />
+          <span className="font-black gradient-text text-lg">SBS-404</span>
+        </div>
+        <p className="text-gray-500 text-sm">© 2024 SBS-404 | O'zbekiston dasturchilar platformasi 🇺🇿</p>
+      </footer>
+    </div>
+  );
+}
